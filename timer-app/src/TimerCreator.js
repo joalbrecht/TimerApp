@@ -1,23 +1,28 @@
 import React,{ Component } from "react";
-import Timer from './Timer'
+import Test from './Test'
 
 class TimerCreator extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            loops: 10,
-            times: 0
+            loops: null,
+            time: null
         }
     }
+
+   
+ 
     handleSubmitLoops =(event) => {
+        event.preventDefault()
         this.setState({
-            loops: event.target.value
+            loops: event.target.value,
         })
 
     }
     handleSubmitTime =(event) => {
+        event.preventDefault()
         this.setState({
-            times: event.target.value
+            time: event.target.value,
         })
 
     }
@@ -25,15 +30,13 @@ class TimerCreator extends Component {
     render() {
         return(
             <div>
-                <h2>Loops: </h2>
-                <form onSubmit={this.handleSubmitLoops}>
-                    <p><input type='number' placeholder='0' loops='loops' onChange={this.handleSubmitLoops}/> </p>
+                <form onSubmit={this.handleSubmit}>
+                    <p><input type='number' placeholder='Loops' loops='loops' onChange={this.handleSubmitLoops}/> </p>
+                    <p><input type='number' placeholder='Time' time='times' onChange={this.handleSubmitTime}/> </p>
+                    <p><input type='submit'/> </p>
                 </form>
-                <h2>Timer Length in seconds:</h2>
-                <form onSubmit={this.handleSubmitTime}>
-                    <p><input type='number' placeholder='0' times='times' onChange={this.handleSubmitTime}/> </p>
-                </form>
-                <h3>Loops: {this.state.loops}, Time: {this.state.times}</h3>
+                <h3>Loops: {this.state.loops}, Time: {this.state.time}</h3>
+                <Test time={this.state.time} />
             </div>
         )
     }
