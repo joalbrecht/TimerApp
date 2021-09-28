@@ -5,11 +5,14 @@ function Test(props) {
     
     const audio = new Audio(ding);
     const [time,countDown] = useState(props.time);
+    const [ended,endIt] = useState(0);
     let myInterval;
 
  
     const start = () => {
+        endIt(0);
         myInterval = setInterval(decrementCount,1000);
+        
 
     }
     
@@ -19,10 +22,12 @@ function Test(props) {
             countDown(0);
             stop();
             audio.play();
+            endIt(1);
             
         }
         else{
             countDown(prevState => prevState-1)
+            endIt(2);
         }
         times--;
     }
@@ -36,6 +41,7 @@ function Test(props) {
     }
     const reset = () => {
         clearInterval(myInterval);
+        endIt(0);
         countDown(props.time)
     }
 
@@ -48,6 +54,7 @@ function Test(props) {
                 <button onClick = {start}> Start  </button>
                 <button onClick = {stop}> Stop  </button>
                 <button onClick = {reset}> Reset  </button>
+                {ended === 1 ?  <h2>It's Over!</h2> : ended === 2 ? <h2>Running</h2> : ''}
      
 
             </div>

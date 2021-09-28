@@ -24,7 +24,11 @@ class TimerCreator extends Component {
         this.setState({
             time: event.target.value,
         })
+    }
 
+    handleSubmit =(event) => {
+        event.preventDefault()
+        
     }
 
     render() {
@@ -33,10 +37,11 @@ class TimerCreator extends Component {
                 <form onSubmit={this.handleSubmit}>
                     <p><input type='number' placeholder='Loops' loops='loops' onChange={this.handleSubmitLoops}/> </p>
                     <p><input type='number' placeholder='Time' time='times' onChange={this.handleSubmitTime}/> </p>
-                    <p><input type='submit'/> </p>
+                    <p><input type='submit' value="Submit"/> </p>
                 </form>
+             
                 <h3>Loops: {this.state.loops}, Time: {this.state.time}</h3>
-                <Test time={this.state.time} />
+                
             </div>
         )
     }
