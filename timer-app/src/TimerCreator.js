@@ -1,5 +1,5 @@
 import React,{ Component } from "react";
-import Test from './Test'
+
 
 class TimerCreator extends Component {
     constructor(props) {
