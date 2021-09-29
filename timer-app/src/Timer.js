@@ -159,7 +159,9 @@ class Timer extends Component {
                     <div className="stopwatch">
                 <p><button onClick={this.stretch}> Stretching</button>
                 <button onClick={this.pomodoro}> Pomodoro</button></p>
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <DisplayComponent minutes={this.state.minutes} seconds={this.state.seconds} time={this.state.miliseconds}/>
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <button onClick = {this.startTimer}> Start  </button>
                 <button onClick = {this.stopTimer}> Stop  </button>
                 <button onClick = {this.resetTimer}> Reset </button>
