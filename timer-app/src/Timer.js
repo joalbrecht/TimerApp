@@ -191,8 +191,10 @@ class Timer extends Component {
                         <input type='number' placeholder='0' seconds='seconds' onChange={this.handleSubmit2}/> </p>
                     
                 </form>
+               
                 </div>
-                
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p align="right"><h6>created by Jonas Albrecht</h6></p>
      </div>
     </div>
         )
