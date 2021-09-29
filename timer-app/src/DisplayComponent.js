@@ -4,8 +4,9 @@ function DisplayComponent(props) {
 
   return (
     <div>
-       &nbsp;
-       <span>{(props.time >= 10)? props.time/10 : "0"+ props.time/10}</span>&nbsp;:&nbsp;
+       &nbsp;&nbsp;
+       <span>{(props.minutes >= 10)? props.minutes : "0"+ props.minutes}</span>&nbsp;:&nbsp;
+       <span>{(props.seconds >= 10)? props.seconds : "0"+ props.seconds}</span>&nbsp;:&nbsp;
        <span>{(props.time >= 10)? props.time : "0"+ props.time}</span>
     </div>
   );

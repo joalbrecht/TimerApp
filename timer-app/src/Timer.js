@@ -1,25 +1,26 @@
-import React,{ Component, useState } from 'react'
+import React,{ Component } from 'react'
 import ding from './Audio/ding.mp3'
 import DisplayComponent from './DisplayComponent';
 
-let timestart = 0;
-let timeoutGlobe = 0;
+let timestart = [0,0];
+let timeoutGlobe = [0,0];
 class Timer extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            times: null,
+            miliseconds: 0,
             ended: null,
             loops: 100,
-            timeout: null,
-            mode: 1
+            mode: 1,
+            seconds: 0,
+            minutes: 0
 
         }
         this.audio = new Audio(ding);
         //this.timerUp = this.timerUp.bind(this);
     }
   
-    startTimer = (startTime) => {
+    startTimer = () => {
 
        this.myInterval = setInterval(this.timerUp, 10)
        this.setState({
@@ -28,50 +29,57 @@ class Timer extends Component {
     }
 
     timerUp = () =>{
-        if(this.state.mode === 0){
-            if(this.state.times === 1){
+
+        if(this.state.seconds === 0 && this.state.minutes > 0) {
+            this.setState({
+                seconds: 59,
+                minutes: this.state.minutes -1
+            })
+        }
+        if( this.state.miliseconds === 0 && this.state.seconds > 0){
+            this.setState({
+                seconds: this.state.seconds -1,
+                miliseconds: 100
+            })
+        }
+        if( this.state.miliseconds === 0 && this.state.seconds === 0 && this.state.minutes === 0){
+            this.setState({
+                miliseconds: 0
+            })
+            clearInterval(this.myInterval);
+            this.audio.play()
+            //Distinction of Modes
+            if( this.state.mode === 0) {
                 this.setState({
-                    times: 0,
-                    loops: this.state.loops - 1,
+                    loops: this.state.loops -1,
                     mode: 1
                 })
-                clearInterval(this.myInterval);
-                this.audio.play();
+                if( this.state.loops > 0 ){
+                    this.setState({
+                        minutes: timeoutGlobe[0],
+                        seconds: timeoutGlobe[1]
+                    })
+                    this.startTimer()
+                }
                 if(this.state.loops === 0){
                     this.setState({
                         ended: 1
                     })
                 }
-                if(this.state.loops > 0){
-                    this.setState({
-                        times: timestart
-                    })
-                    this.startTimer(timeoutGlobe)
-                }
-                
-                
             }
-            else{
+            else if( this.state.mode === 1) {
                 this.setState({
-                    times: this.state.times -1
+                    mode: 0,
+                    minutes: timestart[0],
+                    seconds: timestart[1]
                 })
+                this.startTimer()
             }
         }
-        if(this.state.mode === 1){
-            if(this.state.timeout === 1){
-                this.setState({
-                    timeout: timeoutGlobe,
-                    mode: 0
-                })
-                clearInterval(this.myInterval);
-                this.audio.play();
-                this.startTimer(timestart)
-            }
-            else{
-                this.setState({
-                    timeout: this.state.timeout -1
-                })
-            }
+        else{
+            this.setState({
+                miliseconds:this.state.miliseconds -1
+            })
         }
         
     }
@@ -81,7 +89,7 @@ class Timer extends Component {
         
         clearInterval(this.myInterval);
         this.setState({
-            times: this.state.times,
+            miliseconds: this.state.miliseconds,
             mode: 3
         })
     }
@@ -89,53 +97,102 @@ class Timer extends Component {
     resetTimer = () => {
         this.setState({
             mode: 1,
-            timeout: timeoutGlobe,
-            times: timestart,
+            minutes: timeoutGlobe[0],
+            seconds: timeoutGlobe[1],
+            miliseconds: 0,
             ended: 0
         })
     }
 
-    handleSubmit =(event) => {
-        this.setState({
-            times: event.target.value*100
-        })
-        timestart = event.target.value*100
+    handleSubmit1 =(event) => {
+        
+        timestart[0] = event.target.value
 
     }
+    handleSubmit2 =(event) => {
+        
+        timestart[1] = event.target.value
+
+    }
+   
     handleSubmitLoops =(event) => {
         this.setState({
-            loops: event.target.value*100
+            loops: event.target.value
         })
 
     }
-    handleSubmitTimout =(event) => {
+    handleSubmitTimout1 =(event) => {
         this.setState({
-            timeout: event.target.value*100
+            minutes: event.target.value
         })
-        timeoutGlobe = event.target.value*100
+        timeoutGlobe[0] = event.target.value
 
     }
+    handleSubmitTimout2 =(event) => {
+        this.setState({
+            seconds: event.target.value
+        })
+        timeoutGlobe[1] = event.target.value
+
+    }
+    
+    stretch = ()=>{
+        timestart= [0,30]
+        timeoutGlobe = [0,5]
+        this.setState({
+            loops:7
+        })
+    }
+
+    pomodoro = ()=>{
+        timestart= [25,0]
+        timeoutGlobe = [5,0]
+        this.setState({
+            loops:3
+        })
+    }
+
     render() {
         return(
-            <div>
+            <div className="main-section">
+                <div className="clock-holder">
+                    <div className="stopwatch">
+                <p><button onClick={this.stretch}> Stretching</button>
+                <button onClick={this.pomodoro}> Pomodoro</button></p>
+                <DisplayComponent minutes={this.state.minutes} seconds={this.state.seconds} time={this.state.miliseconds}/>
+                <button onClick = {this.startTimer}> Start  </button>
+                <button onClick = {this.stopTimer}> Stop  </button>
+                <button onClick = {this.resetTimer}> Reset </button>
+                <div>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p>Current settings:</p>
+                <p>Loops: {this.state.loops}, Timeout(s): {timeoutGlobe[0]}:{timeoutGlobe[1]>= 10 ? timeoutGlobe[1] : "0"+timeoutGlobe[1] }, Timer Length: {timestart[0]}:{timestart[1]>= 10 ? timestart[1] : "0"+timestart[1]}
+                </p>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <h3>Customize:</h3>
                 <h5>Loops:</h5>
                 <form onSubmit={this.handleSubmitLoops}>
                     <p><input type='number' placeholder='0' loops='loops' onChange={this.handleSubmitLoops}/> </p>
                 </form>
-                <h3>Timout:</h3>
+                <h5>Timout:</h5>
                 <form onSubmit={this.handleSubmitTimout}>
-                    <p><input type='number' placeholder='0' timeout='timeout' onChange={this.handleSubmitTimout}/> </p>
+                    <p><input type='number' placeholder='0' timeout='timeout' onChange={this.handleSubmitTimout1}/>:
+                    <input type='number' placeholder='0' timeout='timeout' onChange={this.handleSubmitTimout2}/>
+                    </p>
                 </form>
                 
-                <h3>Timer Length in seconds:</h3>
+                <h5>Timer Length:</h5>
                 <form onSubmit={this.handleSubmit}>
-                    <p><input type='number' placeholder='0' times='times' onChange={this.handleSubmit}/> </p>
+                    <p> 
+                        <input type='number' placeholder='0' minutes='minutes' onChange={this.handleSubmit1}/>:   
+                        <input type='number' placeholder='0' seconds='seconds' onChange={this.handleSubmit2}/> </p>
+                    
                 </form>
-                <DisplayComponent time={this.state.mode === 1 ? this.state.timeout : this.state.times}/>
-                <button onClick = {this.startTimer}> Start  </button>
-                <button onClick = {this.stopTimer}> Stop  </button>
-                <button onClick = {this.resetTimer}> Reset </button>
-            </div>
+                </div>
+                
+     </div>
+    </div>
         )
     }
     componentDidMount() {
